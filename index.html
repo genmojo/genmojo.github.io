@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="GenMOJO: Robust Multi-Object 4D Generation for In-the-wild Videos.">
+  <meta name="keywords" content="GenMOJO, 3D Gaussian Splatting, 4D Gaussian Splatting, Video-to-4D">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GenMOJO: Robust Multi-Object 4D Generation for In-the-wild Videos</title>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="./static/images/favicon.png">
+
+  <script src="./static/js/jquery-3.7.1.slim.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+</head>
+<body>
+
+<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+  <div class="navbar-menu">
+    <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
+      <a class="navbar-item" href="https://wenhsuanchu.github.io/">
+      <span class="icon">
+          <i class="fas fa-home"></i>
+      </span>
+      </a>
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">GenMOJO: Robust Multi-Object 4D Generation for In-the-wild Videos</h1>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">
+              <a href="https://wenhsuanchu.github.io/">Wen-Hsuan Chu</a><sup>*1</sup>,</span>
+            <span class="author-block">
+              <a href="https://www.kelei.site/">Lei Ke</a><sup>*1</sup>,</span>
+            <span class="author-block">
+              <a href="https://www.jmliu.site/">Jianmeng Liu</a><sup>*1</sup>,</span>
+            <span class="author-block">
+              <a href="#">Mingxiao Huo</a><sup>1</sup>,
+            </span>
+            <span class="author-block">
+              <a href="#">Pavel Tokmakov</a><sup>2</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://www.cs.cmu.edu/~katef/">Katerina Fragkiadaki</a><sup>1</sup>
+            </span>
+
+          </div>
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block"><sup>1</sup>Carnegie Mellon University</span>
+            &nbsp;&nbsp;
+            <span class="author-block"><sup>2</sup>Toyota Research Institute</span>
+            <br />
+            <span class="author-block"><small><sup>*</sup>Equal Contribution</small></span>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <!-- PDF Link. -->
+              <span class="link-block">
+                <a href="#"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="#"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+              <!-- Video Link. -->
+              <!-- <span class="link-block">
+                <a href="https://www.youtube.com/watch?v=MrKrnHhk8IA"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-youtube"></i>
+                  </span>
+                  <span>Video</span>
+                </a>
+              </span> -->
+              <!-- Code Link. -->
+              <span class="link-block">
+                <a href="https://github.com/genmojo/GenMOJO"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code</span>
+                  </a>
+              </span>
+              <span class="link-block">
+                <a href="index_dataset.html"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-database"></i>
+                  </span>
+                  <span>MOSE-PTS Dataset</span>
+                  </a>
+              </span>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="hero teaser">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;margin-top:10px;">
+        <tr style="padding:0px">
+          <td style="padding-right:1%;width:32%;vertical-align:middle">
+            <video class="lazy" poster="" id="stroller-gt" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; overflow:hidden">
+              <source data-src="./static/videos/stroller.mp4"
+                      type="video/mp4">
+            </video>
+          </td>
+          <td style="padding-right:1%;width:32%;vertical-align:middle">
+            <video class="lazy" poster="" id="rollerblade-gt" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; overflow:hidden">
+              <source data-src="./static/videos/rollerblade.mp4"
+                      type="video/mp4">
+            </video>
+          </td>
+          <td style="padding-right:1%;width:32%;vertical-align:middle">
+            <video class="lazy" poster="" id="breakdance-gt" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; overflow:hidden">
+              <source data-src="./static/videos/breakdance-flare.mp4"
+                      type="video/mp4">
+            </video>
+          </td>
+        </tr>
+        <tr style="padding:0px">
+          <td style="padding-right:1%;width:32%;vertical-align:middle">
+            <center><img src="static/images/down_arrow.png" style='height: 10%; width: 10%; object-fit: contain'/></center>
+          </td>
+          <td style="padding-right:1%;width:32%;vertical-align:middle">
+            <center><img src="static/images/down_arrow.png" style='height: 10%; width: 10%; object-fit: contain'/></center>
+          </td>
+          <td style="padding-right:1%;width:32%;vertical-align:middle">
+            <center><img src="static/images/down_arrow.png" style='height: 10%; width: 10%; object-fit: contain'/></center>
+          </td>
+        </tr>
+        <tr style="padding:0px">
+          <td style="padding-right:1%;width:32%;vertical-align:middle">
+            <video class="lazy" poster="" id="stroller-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; overflow:hidden">
+              <source data-src="./static/videos/stroller-demo.mp4"
+                      type="video/mp4">
+            </video>
+          </td>
+          <td style="padding-right:1%;width:32%;vertical-align:middle">
+            <video class="lazy" poster="" id="rollerblade-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; overflow:hidden">
+              <source data-src="./static/videos/rollerblade-demo.mp4"
+                      type="video/mp4">
+            </video>
+          </td>
+          <td style="padding-right:1%;width:32%;vertical-align:middle">
+            <video class="lazy" poster="" id="breakdance-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; overflow:hidden">
+              <source data-src="./static/videos/breakdance-demo.mp4"
+                      type="video/mp4">
+            </video>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <h2 class="subtitle has-text-centered">
+      <span class="dnerf">DreamScene4D</span> can produce dynamic scene-level Gaussian representations (bottom row)
+      from monocular <br />
+      videos (top row) with multiple objects undergoing large and complex motions. 
+    </h2>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            We address the challenge of generating dynamic 4D scenes from monocular multi-object videos with 
+            heavy occlusions and introduce GenMOJO, a novel approach that integrates rendering-based deformable 
+            3D Gaussian optimization with generative priors for view synthesis. While existing view-synthesis models 
+            excel at novel view generation for isolated objects, they struggle with full scenes due to their complexity 
+            and data demands.
+            To overcome this, GenMOJO decomposes scenes into individual objects, optimizing a differentiable set of 
+            deformable Gaussians per object while capturing 2D occlusions from a 3D perspective through joint Gaussian splatting.
+            Joint splatting ensures occlusion-aware rendering losses in observed frames, while explicit object 
+            decomposition allows the usage of object-centric diffusion models for object completion in unobserved viewpoints.
+            To reconcile the differences between object-centric priors and the global frame-centric coordinate system of the video, 
+            GenMOJO employs differentiable transformations to unify the rendering and generative constraints within a single framework. 
+            The result is a model capable of generating 4D objects across space and time while producing 2D and 3D point tracks from monocular videos. 
+            To rigorously evaluate the quality of scene generation and the accuracy of the motion under multi-object occlusions, 
+            we introduce MOSE-PTS, a subset of the challenging MOSE benchmark, which we annotated with high-quality 2D point tracks.
+            Quantitative evaluations and perceptual human studies confirm that GenMOJO generates more realistic 
+            novel views of scenes and produces more accurate point tracks compared to existing approaches.
+          </p>
+          <!--/ Abstract. -->
+          <br />
+          <!-- Overview. -->
+          <!-- <img src="static/images/method.png" style='height: 100%; width: 100%; object-fit: contain'/>
+          <p>
+            <small>
+              <b>(a)</b> We decompose and amodally complete objects and the background in the video,
+              then use <a href="https://dreamgaussian.github.io/">DreamGaussian</a> to obtain static
+              3D Gaussian representations.
+              <b>(b)</b> Next, we factorize the object motion into multiple components and optimize them
+              independently.
+              <b>(c)</b> Finally, we re-compose the objects using monocular depth prediction guidance. 
+            </small>
+          </p> -->
+        </div>
+        <h2 class="title is-3">Video <span style="color: red;">(Video Title TBA)</span></h2>
+        <div class="content has-text-justified">
+          <video class="lazy" poster="" id="results-showcase" autoplay controls muted loop playsinline height="100%" style="overflow:hidden">
+            <source data-src="./static/videos/genmojo_supp_video.mp4" type="video/mp4">
+          </video>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!--/ NVS. -->
+<section class="hero is-light is-small">
+  <div class="hero-body">
+    <div class="columns is-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Arbitrary View Synthesis<span style="color: red;"> (TBA)</span></h2>
+        <div class="content has-text-justified">
+          <p>
+            <i>DreamScene4D</i> can synthesize views from
+            arbitrary camera poses at any given timestep. We present some examples
+            where we render the scene using the reference camera (outlined in
+            <font color="#008ada">blue</font>) and an orbital camera that changes
+            the azimuth and elevation angle (outlined in <font color="#da8300">orange</font>).
+            The original input video is presented in the leftmost column for reference.
+          </p>
+        </div>
+        <div class="container">
+          <div id="nvs-names" style="margin: 0 auto;">
+            <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;margin-bottom:0px;">
+              <tr style="padding:0px">
+                <td style="padding-left:1%;padding-right:1%;width:25%;text-align:center;vertical-align:middle">
+                  <small><b>Input Video</b></small>
+                </td>
+                <td style="padding-right:1%;width:25%;text-align:center;vertical-align:middle">
+                  <small><b>Original View</b></small>
+                </td>
+                <td style="padding-right:1%;width:25%;text-align:center;vertical-align:middle">
+                  <small><b>Novel View 1</b></small>
+                </td>
+                <td style="padding-right:1%;width:25%;text-align:center;vertical-align:middle">
+                  <small><b>Novel View 2</b></small>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div id="nvs-carousel" class="carousel results-carousel" style="margin: 0 auto;">
+            <div class="item item-Dogs-Jump">
+              <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;margin-top:1%;margin-bottom:1%;">
+                <tr style="padding:0px">
+                  <td style="padding-left:1%;padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Dogs-Jump-orig" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; overflow:hidden">
+                      <source data-src="./static/videos/dogs-jump.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Dogs-Jump-no-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #008ada; overflow:hidden">
+                      <source data-src="./static/videos/Dogs-Jump Composed No Orbit.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Dogs-Jump-hor-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #da8300; overflow:hidden">
+                      <source data-src="./static/videos/Dogs-Jump Composed Hor Orbit.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Dogs-Jump-elev-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #da8300; overflow:hidden">
+                      <source data-src="./static/videos/Dogs-Jump Composed Elev Orbit.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <div class="item item-Animal Fighting">
+              <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;margin-top:1%;margin-bottom:1%;">
+                <tr style="padding:0px">
+                  <td style="padding-left:1%;padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Animal Fighting-orig" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; overflow:hidden">
+                      <source data-src="./static/videos/Animal Fighting.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Animal Fighting-no-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #008ada; overflow:hidden">
+                      <source data-src="./static/videos/Animal Fighting Composed No Orbit.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Animal Fighting-hor-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #da8300; overflow:hidden">
+                      <source data-src="./static/videos/Animal Fighting Composed Hor Orbit.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Animal Fighting-elev-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #da8300; overflow:hidden">
+                      <source data-src="./static/videos/Animal Fighting Composed Elev Orbit.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <div class="item item-Gold-Fish">
+              <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;margin-top:1%;margin-bottom:1%;">
+                <tr style="padding:0px">
+                  <td style="padding-left:1%;padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Gold-Fish-orig" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; overflow:hidden">
+                      <source data-src="./static/videos/gold-fish.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Gold-Fish-no-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #008ada; overflow:hidden">
+                      <source data-src="./static/videos/Gold-Fish Composed No Orbit.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Gold-Fish-hor-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #da8300; overflow:hidden">
+                      <source data-src="./static/videos/Gold-Fish Composed Hor Orbit.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Gold-Fish-elev-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #da8300; overflow:hidden">
+                      <source data-src="./static/videos/Gold-Fish Composed Elev Orbit.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <div class="item item-multi-pig">
+              <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;margin-top:1%;margin-bottom:1%;">
+                <tr style="padding:0px">
+                  <td style="padding-left:1%;padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Gold-Fish-orig" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; overflow:hidden">
+                      <source data-src="./static/videos/multi-pig.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Gold-Fish-no-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #008ada; overflow:hidden">
+                      <source data-src="./static/videos/pigs_composed_no_orbit.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Gold-Fish-hor-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #da8300; overflow:hidden">
+                      <source data-src="./static/videos/pigs_composed_hor_orbit.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Gold-Fish-elev-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #da8300; overflow:hidden">
+                      <source data-src="./static/videos/pigs_composed_elev_orbit.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <div class="item item-Dance-Twirl">
+              <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;margin-top:1%;margin-bottom:1%;">
+                <tr style="padding:0px">
+                  <td style="padding-left:1%;padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Dance-Twirl-orig" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; overflow:hidden">
+                      <source data-src="./static/videos/dance-twirl.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Dance-Twirl-no-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #008ada; overflow:hidden">
+                      <source data-src="./static/videos/Dance-Twirl Composed No Orbit.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Dance-Twirl-hor-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #da8300; overflow:hidden">
+                      <source data-src="./static/videos/Dance-Twirl Composed Hor Orbit.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Dance-Twirl-elev-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #da8300; overflow:hidden">
+                      <source data-src="./static/videos/Dance-Twirl Composed Elev Orbit.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <div class="item item-Banana-Drop">
+              <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;margin-top:1%;margin-bottom:1%;">
+                <tr style="padding:0px">
+                  <td style="padding-left:1%;padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Banana-Drop-orig" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; overflow:hidden">
+                      <source data-src="./static/videos/banana-drop.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Banana-Drop-no-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #008ada; overflow:hidden">
+                      <source data-src="./static/videos/Banana-Drop Composed No Orbit.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Banana-Drop-hor-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #da8300; overflow:hidden">
+                      <source data-src="./static/videos/Banana-Drop Composed Hor Orbit.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Ducky-elev-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #da8300; overflow:hidden">
+                      <source data-src="./static/videos/Banana-Drop Composed Elev Orbit.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <div class="item item-Dancing-40">
+              <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;margin-top:1%;margin-bottom:1%;">
+                <tr style="padding:0px">
+                  <td style="padding-left:1%;padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Dancing-40-orig" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; overflow:hidden">
+                      <source data-src="./static/videos/dancing-40.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Dancing-40-no-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #008ada; overflow:hidden">
+                      <source data-src="./static/videos/Dancing-40 Composed No Orbit.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Dancing-40-hor-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #da8300; overflow:hidden">
+                      <source data-src="./static/videos/Dancing-40 Composed Hor Orbit.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Dancing-40-elev-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #da8300; overflow:hidden">
+                      <source data-src="./static/videos/Dancing-40 Composed Elev Orbit.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <div class="item item-Ducky">
+              <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;margin-top:1%;margin-bottom:1%;">
+                <tr style="padding:0px">
+                  <td style="padding-left:1%;padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Ducky-orig" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; overflow:hidden">
+                      <source data-src="./static/videos/ducky.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Ducky-no-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #008ada; overflow:hidden">
+                      <source data-src="./static/videos/Ducky Composed No Orbit.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Ducky-hor-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #da8300; overflow:hidden">
+                      <source data-src="./static/videos/Ducky Composed Hor Orbit.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Ducky-elev-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #da8300; overflow:hidden">
+                      <source data-src="./static/videos/Ducky Composed Elev Orbit.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <div class="item item-Car-Shadow">
+              <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;margin-top:1%;margin-bottom:1%;">
+                <tr style="padding:0px">
+                  <td style="padding-left:1%;padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Car-Shadow-orig" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; overflow:hidden">
+                      <source data-src="./static/videos/car-shadow.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Car-Shadow-no-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #008ada; overflow:hidden">
+                      <source data-src="./static/videos/Car-Shadow Composed No Orbit.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Car-Shadow-hor-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #da8300; overflow:hidden">
+                      <source data-src="./static/videos/Car-Shadow Composed Hor Orbit.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Car-Shadow-elev-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #da8300; overflow:hidden">
+                      <source data-src="./static/videos/Car-Shadow Composed Elev Orbit.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <div class="item item-Two Cats">
+              <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;margin-top:1%;margin-bottom:1%;">
+                <tr style="padding:0px">
+                  <td style="padding-left:1%;padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Two Cats-orig" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; overflow:hidden">
+                      <source data-src="./static/videos/Two Cats.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Two Cats-no-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #008ada; overflow:hidden">
+                      <source data-src="./static/videos/Two Cats Composed No Orbit.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Two Cats-hor-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #da8300; overflow:hidden">
+                      <source data-src="./static/videos/Two Cats Composed Hor Orbit.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Two Cats-elev-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #da8300; overflow:hidden">
+                      <source data-src="./static/videos/Two Cats Composed Elev Orbit.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <div class="item item-Kid-Football">
+              <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;margin-top:1%;margin-bottom:1%;">
+                <tr style="padding:0px">
+                  <td style="padding-left:1%;padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Kid-Football-orig" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; overflow:hidden">
+                      <source data-src="./static/videos/kid-football.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Kid-Football-no-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #008ada; overflow:hidden">
+                      <source data-src="./static/videos/Kid-Football Composed No Orbit.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Kid-Football-hor-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #da8300; overflow:hidden">
+                      <source data-src="./static/videos/Kid-Football Composed Hor Orbit.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Kid-Football-elev-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #da8300; overflow:hidden">
+                      <source data-src="./static/videos/Kid-Football Composed Elev Orbit.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <div class="item item-Stacking">
+              <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;margin-top:1%;margin-bottom:1%;">
+                <tr style="padding:0px">
+                  <td style="padding-left:1%;padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Stacking-orig" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; overflow:hidden">
+                      <source data-src="./static/videos/stacking.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Stacking-no-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #008ada; overflow:hidden">
+                      <source data-src="./static/videos/Stacking Composed No Orbit.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Stacking-hor-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #da8300; overflow:hidden">
+                      <source data-src="./static/videos/Stacking Composed Hor Orbit.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Stacking-elev-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #da8300; overflow:hidden">
+                      <source data-src="./static/videos/Stacking Composed Elev Orbit.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <div class="item item-Rabbits">
+              <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;margin-top:1%;margin-bottom:1%;">
+                <tr style="padding:0px">
+                  <td style="padding-left:1%;padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Rabbits-orig" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; overflow:hidden">
+                      <source data-src="./static/videos/Rabbits.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Rabbits-no-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #008ada; overflow:hidden">
+                      <source data-src="./static/videos/Rabbits Composed No Orbit.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Rabbits-hor-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #da8300; overflow:hidden">
+                      <source data-src="./static/videos/Rabbits Composed Hor Orbit.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Rabbits-elev-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #da8300; overflow:hidden">
+                      <source data-src="./static/videos/Rabbits Composed Elev Orbit.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <div class="item item-Parkour-Half">
+              <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;margin-top:1%;margin-bottom:1%;">
+                <tr style="padding:0px">
+                  <td style="padding-left:1%;padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Parkour-Half-orig" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; overflow:hidden">
+                      <source data-src="./static/videos/parkour-half.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Parkour-Half-no-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #008ada; overflow:hidden">
+                      <source data-src="./static/videos/Parkour-Half Composed No Orbit.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Parkour-Half-hor-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #da8300; overflow:hidden">
+                      <source data-src="./static/videos/Parkour-Half Composed Hor Orbit.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Parkour-Half-elev-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #da8300; overflow:hidden">
+                      <source data-src="./static/videos/Parkour-Half Composed Elev Orbit.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="columns is-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Gaussian Motion Trajectories</h2>
+        <div class="content has-text-justified">
+          <p>
+            <span style="color: red;">(TBA) </span>We visualize the 3D Gaussian trajectories from <i>DreamScene4D</i> corresponding to the pixels rendered from
+            camera views by projecting them to 2D. We show that the Gaussian deformations provide reasonable
+            2D point motion trajectories in both the original view
+            (outlined in <font color="#008ada">blue</font>) and in novel unseen views
+            (outlined in <font color="#da8300">orange</font>). 
+            The rendered 3D Gaussians are selected <b>independently</b> per view.
+          </p>
+        </div>
+        <div class="container">
+          <div id="motion-names" style="margin: 0 auto;">
+            <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;margin-bottom:0px;">
+              <tr style="padding:0px">
+                <td style="padding-left:1%;padding-right:1%;width:33%;text-align:center;vertical-align:middle">
+                  <small><b>Ours</b></small>
+                  <!-- <b>Ours</b> -->
+                </td>
+                <td style="padding-right:1%;width:33%;text-align:center;vertical-align:middle">
+                  <small><b>CoTracker V3</b></small>
+                </td>
+                <td style="padding-right:1%;width:33%;text-align:center;vertical-align:middle">
+                  <small><b>Shape-of-Motion</b></small>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div id="motion-carousel" class="carousel results-carousel" style="margin: 0 auto;">
+            <div class="item item-rollerblade-traj">
+              <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;margin-top:1%;margin-bottom:1%;">
+                <tr style="padding:0px">
+                  <td style="padding-left:1%;padding-right:1%;width:33%;vertical-align:middle">
+                    <video class="lazy" poster="" id="rollerblade-traj-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #008ada; overflow:hidden">
+                      <source data-src="./static/videos/ours_cats.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-right:1%;width:33%;vertical-align:middle">
+                    <video class="lazy" poster="" id="rollerblade-traj-n1-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #da8300; overflow:hidden">
+                      <source data-src="./static/videos/cotracker_cats.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-right:1%;width:33%;vertical-align:middle">
+                    <video class="lazy" poster="" id="rollerblade-traj-n2-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #da8300; overflow:hidden">
+                      <source data-src="./static/videos/som_cats.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <div class="item item-kid-football-traj">
+              <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;margin-top:1%;margin-bottom:1%;">
+                <tr style="padding:0px">
+                  <td style="padding-left:1%;padding-right:1%;width:33%;vertical-align:middle">
+                    <video class="lazy" poster="" id="kid-football-traj-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #008ada; overflow:hidden">
+                      <source data-src="./static/videos/ours_bird.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-right:1%;width:33%;vertical-align:middle">
+                    <video class="lazy" poster="" id="kid-football-traj-n1-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #da8300; overflow:hidden">
+                      <source data-src="./static/videos/cotracker_bird.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-right:1%;width:33%;vertical-align:middle">
+                    <video class="lazy" poster="" id="kid-football-traj-n2-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #da8300; overflow:hidden">
+                      <source data-src="./static/videos/som_bird.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <div class="item item-dance-twirl-traj">
+              <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;margin-top:1%;margin-bottom:1%;">
+                <tr style="padding:0px">
+                  <td style="padding-left:1%;padding-right:1%;width:33%;vertical-align:middle">
+                    <video class="lazy" poster="" id="dance-twirl-traj-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #008ada; overflow:hidden">
+                      <source data-src="./static/videos/ours_goose.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-right:1%;width:33%;vertical-align:middle">
+                    <video class="lazy" poster="" id="dance-twirl-traj-n1-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #da8300; overflow:hidden">
+                      <source data-src="./static/videos/cotracker_goose.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-right:1%;width:33%;vertical-align:middle">
+                    <video class="lazy" poster="" id="dance-twirl-traj-n2-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #da8300; overflow:hidden">
+                      <source data-src="./static/videos/som_goose.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--/ Animation. -->
+  </div>
+</section>
+
+<!--/ Comparisons -->
+<section class="hero is-light is-small">
+  <div class="hero-body">
+    <div class="columns is-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Qualitative Comparisons<span style="color: red;"> (TBA)</span></h2>
+        <div class="content has-text-justified">
+          <p>
+            We show some comparisons between DreamScene4D and other video-to-4d baselines.
+            Our method can handle challenging videos with multiple objects undergoing large and complex
+            motion. The original input video is presented in the leftmost column for reference.
+          </p>
+        </div>
+        <div class="container">
+          <div id="comparisons-method-names" style="margin: 0 auto;">
+            <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;margin-bottom:0px;">
+              <tr style="padding:0px">
+                <td style="padding-left:1%;padding-right:1%;width:25%;text-align:center;vertical-align:middle">
+                  <small><b>Input Video</b></small>
+                </td>
+                <td style="padding-right:1%;width:25%;text-align:center;vertical-align:middle">
+                  <small><b><a href="https://consistent4d.github.io/">Consistent4D</a></b></small>
+                </td>
+                <td style="padding-right:1%;width:25%;text-align:center;vertical-align:middle">
+                  <small><b><a href="https://jiawei-ren.github.io/projects/dreamgaussian4d/">DreamGaussian4D</a></b></small>
+                </td>
+                <td style="padding-right:1%;width:25%;text-align:center;vertical-align:middle">
+                  <small><b>DreamScene4D (Ours)</b></small>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div id="comparisons-carousel" class="carousel results-carousel" style="margin: 0 auto;">
+            <div class="item item-Ducky">
+              <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;margin-top:1%;margin-bottom:1%;">
+                <tr style="padding:0px">
+                  <td style="padding-left:1%;padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Ducky-Orig" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; overflow:hidden">
+                      <source data-src="./static/videos/ducky.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="ducky-C4D" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 3px solid #000000; overflow:hidden">
+                      <source data-src="./static/videos/Ducky C4D.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="ducky-DG4D" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 3px solid #000000; overflow:hidden">
+                      <source data-src="./static/videos/Ducky DG4D.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Ducky-Ours" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 3px solid #000000; overflow:hidden">
+                      <source data-src="./static/videos/Ducky Composed Hor Orbit.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <div class="item item-Dogs-Jump">
+              <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;margin-top:1%;margin-bottom:1%;">
+                <tr style="padding:0px">
+                  <td style="padding-left:1%;padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Dogs-Jump-Orig" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; overflow:hidden">
+                      <source data-src="./static/videos/dogs-jump.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Dogs-Jump-C4D" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 3px solid #000000; overflow:hidden">
+                      <source data-src="./static/videos/Dogs-Jump C4D.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Dogs-Jump-DG4D" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 3px solid #000000; overflow:hidden">
+                      <source data-src="./static/videos/Dogs-Jump DG4D.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Dogs-Jump-Ours" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 3px solid #000000; overflow:hidden">
+                      <source data-src="./static/videos/Dogs-Jump Composed Hor Orbit.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <div class="item item-Parkour">
+              <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;margin-top:1%;margin-bottom:1%;">
+                <tr style="padding:0px">
+                  <td style="padding-left:1%;padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Parkour-Orig" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; overflow:hidden">
+                      <source data-src="./static/videos/parkour.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Parkour-C4D" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 3px solid #000000; overflow:hidden">
+                      <source data-src="./static/videos/Parkour C4D.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Parkour-DG4D" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 3px solid #000000; overflow:hidden">
+                      <source data-src="./static/videos/Parkour DG4D.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Parkour-Ours" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 3px solid #000000; overflow:hidden">
+                      <source data-src="./static/videos/Parkour Composed Hor Orbit.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <div class="item item-Kid-Football">
+              <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;margin-top:1%;margin-bottom:1%;">
+                <tr style="padding:0px">
+                  <td style="padding-left:1%;padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Kid-Football-Orig" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; overflow:hidden">
+                      <source data-src="./static/videos/kid-football.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-left:1%;padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Kid-Football-C4D" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 3px solid #000000; overflow:hidden">
+                      <source data-src="./static/videos/Kid-Football C4D.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Kid-Football-DG4D" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 3px solid #000000; overflow:hidden">
+                      <source data-src="./static/videos/Kid-Football DG4D.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-right:1%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="Kid-Football-Ours" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 3px solid #000000; overflow:hidden">
+                      <source data-src="./static/videos/Kid-Football Composed Hor Orbit.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX <span style="color: red;">(TBA)</span></h2>
+<pre><code>@article{dreamscene4d,
+  title={DreamScene4D: Dynamic Multi-Object Scene Generation from Monocular Videos},
+  author={Chu, Wen-Hsuan and Ke, Lei and Fragkiadaki, Katerina},
+  journal={NeurIPS},
+  year={2024}
+}</code></pre>
+  </div>
+</section>
+
+
+<footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <h4 class="title">Acknowledgements</h4>
+          <p>
+            This work was sponsored by Toyota Research Institute.
+            The website template was borrowed from <a
+              href="https://github.com/nerfies/nerfies.github.io">Nerfies</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .slider-navigation-next{
+    background: #e6e6e6 center center no-repeat;
+    border: 1px solid #e6e6e6;
+    box-shadow: 0 2px 5px #32323284;
+  }
+  .slider-navigation-previous{
+    background: #e6e6e6 center center no-repeat;
+    border: 1px solid #e6e6e6;
+    box-shadow: 0 2px 5px #32323284;
+  }
+  .slider-pagination{
+    .slider-page{
+      border: 1px solid #c9c9c9;
+    };
+  }
+</style>
+  
+<script>
+  // Video lazy loading
+  document.addEventListener("DOMContentLoaded", function() {
+      var lazyVideos = [].slice.call(document.querySelectorAll("video.lazy"));
+    
+      if ("IntersectionObserver" in window) {
+        var lazyVideoObserver = new IntersectionObserver(function(entries, observer) {
+          entries.forEach(function(video) {
+            if (video.isIntersecting) {
+              for (var source in video.target.children) {
+                var videoSource = video.target.children[source];
+                if (typeof videoSource.tagName === "string" && videoSource.tagName === "SOURCE") {
+                  videoSource.src = videoSource.dataset.src;
+                }
+              }
+    
+              video.target.load();
+              video.target.classList.remove("lazy");
+              lazyVideoObserver.unobserve(video.target);
+            }
+          });
+        });
+    
+        lazyVideos.forEach(function(lazyVideo) {
+          lazyVideoObserver.observe(lazyVideo);
+        });
+      }
+    });
+  // Carousel configs
+  bulmaCarousel.attach('#nvs-carousel', {
+    slidesToScroll: 1,
+    slidesToShow: 1,
+    loop: true,
+    infinite: true
+  });
+  bulmaCarousel.attach('#motion-carousel', {
+    slidesToScroll: 1,
+    slidesToShow: 1,
+    loop: true,
+    infinite: true
+  });
+  bulmaCarousel.attach('#comparisons-carousel', {
+    slidesToScroll: 1,
+    slidesToShow: 1,
+    loop: true,
+    infinite: true
+  });
+</script>
+
+</body>
+</html>

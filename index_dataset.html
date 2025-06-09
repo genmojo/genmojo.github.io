@@ -69,7 +69,7 @@
                 ];
               for (let i = 0; i<5; ++i){
                 var idx=i+page*5;
-                document.getElementById("tab"+i).innerHTML='<video controls autoplay><source src="mose_video/'+names[idx]+'" type="video/mp4"></video>';
+                document.getElementById("tab"+i).innerHTML='<video class="lazy" poster="" autoplay controls muted loop playsinline><source src="mose_video/'+names[idx]+'" type="video/mp4"></video>';
               }
               for (let i = 0; i<6; ++i){
                 if(i==page){

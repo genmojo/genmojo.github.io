@@ -356,14 +356,18 @@
           <div id="motion-names" style="margin: 0 auto;">
             <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;margin-bottom:0px;">
               <tr style="padding:0px">
-                <td style="padding-left:1%;padding-right:1%;width:33%;text-align:center;vertical-align:middle">
+                <td style="padding-left:1%;padding-right:1%;width:25%;text-align:center;vertical-align:middle">
+                  <small><b>Ground Truth</b></small>
+                  <!-- <b>Ours</b> -->
+                </td>
+                <td style="padding-left:1%;padding-right:1%;width:25%;text-align:center;vertical-align:middle">
                   <small><b>Ours</b></small>
                   <!-- <b>Ours</b> -->
                 </td>
-                <td style="padding-right:1%;width:33%;text-align:center;vertical-align:middle">
+                <td style="padding-right:1%;width:25%;text-align:center;vertical-align:middle">
                   <small><b>CoTracker V3</b></small>
                 </td>
-                <td style="padding-right:1%;width:33%;text-align:center;vertical-align:middle">
+                <td style="padding-right:1%;width:25%;text-align:center;vertical-align:middle">
                   <small><b>Shape-of-Motion</b></small>
                 </td>
               </tr>
@@ -373,19 +377,25 @@
             <div class="item item-cats-traj">
               <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;margin-top:1%;margin-bottom:1%;">
                 <tr style="padding:0px">
-                  <td style="padding-left:6%;padding-right:5%;width:33%;vertical-align:middle">
+                  <td style="padding-left:5%;padding-right:5%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="cats-traj-n1-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #000000; overflow:hidden">
+                      <source data-src="./static/videos/gt_cats.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-left:5%;padding-right:5%;width:25%;vertical-align:middle">
                     <video class="lazy" poster="" id="cats-traj-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #008ada; overflow:hidden">
                       <source data-src="./static/videos/ours_cats.mp4"
                               type="video/mp4">
                     </video>
                   </td>
-                  <td style="padding-left:5%;padding-right:5%;width:33%;vertical-align:middle">
+                  <td style="padding-left:5%;padding-right:5%;width:25%;vertical-align:middle">
                     <video class="lazy" poster="" id="cats-traj-n1-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #000000; overflow:hidden">
                       <source data-src="./static/videos/cotracker_cats.mp4"
                               type="video/mp4">
                     </video>
                   </td>
-                  <td style="padding-left:5%;padding-right:5%;width:33%;vertical-align:middle">
+                  <td style="padding-left:5%;padding-right:5%;width:25%;vertical-align:middle">
                     <video class="lazy" poster="" id="cats-traj-n2-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #000000; overflow:hidden">
                       <source data-src="./static/videos/som_cats.mp4"
                               type="video/mp4">
@@ -397,19 +407,25 @@
             <div class="item item-bird-traj">
               <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;margin-top:1%;margin-bottom:1%;">
                 <tr style="padding:0px">
-                  <td style="padding-left:6%;padding-right:5%;width:33%;vertical-align:middle">
+                  <td style="padding-left:5%;padding-right:5%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="bird-traj-n1-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #000000; overflow:hidden">
+                      <source data-src="./static/videos/gt_bird.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-left:5%;padding-right:5%;width:25%;vertical-align:middle">
                     <video class="lazy" poster="" id="bird-traj-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #008ada; overflow:hidden">
                       <source data-src="./static/videos/ours_bird.mp4"
                               type="video/mp4">
                     </video>
                   </td>
-                  <td style="padding-left:5%;padding-right:5%;width:33%;vertical-align:middle">
+                  <td style="padding-left:5%;padding-right:5%;width:25%;vertical-align:middle">
                     <video class="lazy" poster="" id="bird-traj-n1-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #000000; overflow:hidden">
                       <source data-src="./static/videos/cotracker_bird.mp4"
                               type="video/mp4">
                     </video>
                   </td>
-                  <td style="padding-left:5%;padding-right:5%;width:33%;vertical-align:middle">
+                  <td style="padding-left:5%;padding-right:5%;width:25%;vertical-align:middle">
                     <video class="lazy" poster="" id="bird-traj-n2-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #000000; overflow:hidden">
                       <source data-src="./static/videos/som_bird.mp4"
                               type="video/mp4">
@@ -421,19 +437,25 @@
             <div class="item item-goose-traj">
               <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;margin-top:1%;margin-bottom:1%;">
                 <tr style="padding:0px">
-                  <td style="padding-left:6%;padding-right:5%;width:33%;vertical-align:middle">
+                  <td style="padding-left:5%;padding-right:5%;width:25%;vertical-align:middle">
+                    <video class="lazy" poster="" id="goose-traj-n1-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #000000; overflow:hidden">
+                      <source data-src="./static/videos/gt_goose.mp4"
+                              type="video/mp4">
+                    </video>
+                  </td>
+                  <td style="padding-left:5%;padding-right:5%;width:25%;vertical-align:middle">
                     <video class="lazy" poster="" id="goose-traj-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #008ada; overflow:hidden">
                       <source data-src="./static/videos/ours_goose.mp4"
                               type="video/mp4">
                     </video>
                   </td>
-                  <td style="padding-left:5%;padding-right:5%;width:33%;vertical-align:middle">
+                  <td style="padding-left:5%;padding-right:5%;width:25%;vertical-align:middle">
                     <video class="lazy" poster="" id="goose-traj-n1-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #000000; overflow:hidden">
                       <source data-src="./static/videos/cotracker_goose.mp4"
                               type="video/mp4">
                     </video>
                   </td>
-                  <td style="padding-left:5%;padding-right:5%;width:33%;vertical-align:middle">
+                  <td style="padding-left:5%;padding-right:5%;width:25%;vertical-align:middle">
                     <video class="lazy" poster="" id="goose-traj-n2-demo" autoplay controls muted loop playsinline height="100%" style="border-radius:18px; border: 5px solid #000000; overflow:hidden">
                       <source data-src="./static/videos/som_goose.mp4"
                               type="video/mp4">
